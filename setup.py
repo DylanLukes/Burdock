@@ -7,7 +7,7 @@ with open(path.join(project_dir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='burdock',
-    version='0.0.1',
+    version='0.0.2-dev1',
     packages=['burdock'],
     url='https://github.com/DylanLukes/burdock',
     license='BSD 3-Clause',
