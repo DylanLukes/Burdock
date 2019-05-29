@@ -1,0 +1,16 @@
+{%- macro var_decl(var) -%}
+variable {{var.name}}
+  var-kind variable
+  dec-type {{var.dec_type}}
+  rep-type {{var.rep_type}}
+{%- endmacro -%}
+
+decl-version 2.0
+input-language data
+
+ppt {{name}}.data:::POINT
+ppt-type point
+
+{%- for var in variables %}
+{{ var_decl(var) }}
+{%- endfor %}
