@@ -1,5 +1,5 @@
 import argparse
-import os
+from os import path
 import sys
 
 import numpy as np
@@ -10,7 +10,13 @@ from pandas import DataFrame, Series
 from jinja2 import Environment, PackageLoader, Template
 
 parser = argparse.ArgumentParser(description='Produce .dtrace and .decls for a given CSV/TSV file.')
-parser.add_argument('input', metavar='input', type=argparse.FileType('r', encoding='utf-8'))
+parser.add_argument('input_file',
+                    metavar='file',
+                    type=argparse.FileType('r', encoding='utf-8'))
+parser.add_argument('--out-decls',
+                    dest='output_decls_file',
+                    metavar='decls',
+                    type=argparse.FileType('w+', encoding='utf-8'))
 
 def dec_type(dtype):
     if dtype == np.int64:
@@ -34,16 +40,11 @@ def rep_type(dtype):
         return 'java.lang.String'
     raise RuntimeError("Unsupported dtype: %s".format(repr(dtype)))
 
-def output_decls(df, input_path, output_path=None, template_env=Environment(loader=PackageLoader('burdock', 'templates'))):
-    input_dirname, input_filename = os.path.split(input_path)
-
-    if not output_path:
-        output_path = os.path.join(input_dirname, input_filename + '.decls')
-
+def output_decls(df, name, output, template_env=Environment(loader=PackageLoader('burdock', 'templates'))):
     template: Template = template_env.get_template('decls.jinja2')
 
     template_data = {
-        'name': input_filename,
+        'name': name,
         'variables': []
     }
     for col_id in df:
@@ -57,15 +58,23 @@ def output_decls(df, input_path, output_path=None, template_env=Environment(load
 
     decls_text = template.render(template_data)
 
-    with open(output_path, 'w+') as f:
-        f.write(decls_text)
+    output.write(decls_text)
 
 def main(argv):
     args = parser.parse_args()
+    input_file = args.input_file
+    input_path = path.normpath(input_file.name)
+    input_dirname, input_filename = path.split(input_path)
 
-    df: DataFrame = pd.read_csv(args.input)
+    df: DataFrame = pd.read_csv(args.input_file)
+    name = path.splitext(input_filename)[0]
 
-    output_decls(df, args.input.name)
+    output_decls_file = args.output_decls_file
+    if not output_decls_file:
+        output_decls_path = path.join(input_dirname, name + '.decls')
+        output_decls_file = open(output_decls_path, 'w+')
+
+    output_decls(df, name, output_decls_file)
 
 if __name__ == '__main__':
     main(sys.argv)
