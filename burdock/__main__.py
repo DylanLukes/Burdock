@@ -89,7 +89,7 @@ def output_dtrace(df, name, output, template_env=Environment(loader=PackageLoade
 
     output.write(dtrace_text)
 
-def main(argv):
+def main():
     args = parser.parse_args()
     input_file = args.input_file
     input_path = path.normpath(input_file.name)
@@ -115,4 +115,4 @@ def main(argv):
     output_dtrace(df, name, output_dtrace_file)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
