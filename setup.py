@@ -7,7 +7,7 @@ with open(path.join(project_dir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='burdock',
-    version='0.0.2-dev2',
+    version='0.0.3',
     packages=['burdock'],
     url='https://github.com/DylanLukes/burdock',
     license='BSD 3-Clause',
@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
 
-    install_requires=['pandas', 'jinja'],
+    install_requires=['pandas', 'jinja2'],
     entry_points= {
         'console_scripts': ['burdock=burdock.__main__:main'],
     },
