@@ -1,0 +1,15 @@
+{% for trace in traces -%}
+{{name}}.data:::POINT
+{%- for var in trace %}
+{{ var.name }}
+{%- if var.rep_type == "java.lang.String" %}
+"{{ var.value }}"
+{% elif var.rep_type == "boolean" %}
+{{ 1 if var.value else 0 }}
+{% else %}
+{{ var.value }}
+{% endif -%}
+1{# (var modified: 0 = no, 1 = yes #}
+{%- endfor %}
+
+{% endfor %}
