@@ -21,7 +21,7 @@ setup(
 
     install_requires=['pandas', 'jinja2'],
     entry_points= {
-        'console_scripts': ['burdock=burdock.__main__:main'],
+        'console_scripts': ['burdock=burdock.__main__:entry'],
     },
 
     include_package_data=True

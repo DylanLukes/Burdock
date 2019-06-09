@@ -1,13 +1,20 @@
 import argparse
+from io import TextIOWrapper
 from os import path
-import sys
 
 import numpy as np
 import pandas as pd
-
+from jinja2 import Environment, PackageLoader, Template
 from pandas import DataFrame, Series
 
-from jinja2 import Environment, PackageLoader, Template
+from burdock.util import run_daikon
+
+# todo: use `constant` flag in decls to avoid output in traces.
+
+# todo: mark synthetic/derived/latent variables in decls var flags.
+# todo: use valid-values for categorical data.
+
+# todo: invent our own new flags...?
 
 parser = argparse.ArgumentParser(description='Produce .dtrace and .decls for a given CSV/TSV file.')
 parser.add_argument('input_file',
@@ -22,6 +29,7 @@ parser.add_argument('--out-dtrace',
                     metavar='path',
                     type=argparse.FileType('w+', encoding='utf-8'))
 
+
 def dec_type(dtype):
     if dtype == np.int64:
         return 'int'
@@ -33,6 +41,7 @@ def dec_type(dtype):
         return 'java.lang.String'
     raise RuntimeError("Unsupported dtype: %s".format(repr(dtype)))
 
+
 def rep_type(dtype):
     if dtype == np.int64:
         return 'int'
@@ -43,6 +52,7 @@ def rep_type(dtype):
     if dtype == object:
         return 'java.lang.String'
     raise RuntimeError("Unsupported dtype: %s".format(repr(dtype)))
+
 
 def output_decls(df, name, output, template_env=Environment(loader=PackageLoader('burdock', 'templates'))):
     template: Template = template_env.get_template('decls.jinja2')
@@ -64,6 +74,7 @@ def output_decls(df, name, output, template_env=Environment(loader=PackageLoader
 
     output.write(decls_text)
 
+
 def output_dtrace(df, name, output, template_env=Environment(loader=PackageLoader('burdock', 'templates'))):
     template: Template = template_env.get_template('dtrace.jinja2')
 
@@ -75,12 +86,12 @@ def output_dtrace(df, name, output, template_env=Environment(loader=PackageLoade
         'name': name,
         'traces': []
     }
-    for tuple in df.itertuples():
+    for (i, row) in df.iterrows():
         trace = []
-        for col_id in df:
+        for col_id in df.columns:
             trace.append({
                 'name': col_id,
-                'value': getattr(tuple, col_id),
+                'value': row[col_id],
                 'rep_type': col_types[col_id]
             })
         template_data['traces'].append(trace)
@@ -89,14 +100,20 @@ def output_dtrace(df, name, output, template_env=Environment(loader=PackageLoade
 
     output.write(dtrace_text)
 
-def main():
-    args = parser.parse_args()
-    input_file = args.input_file
+
+def main(args):
+    input_file: TextIOWrapper = args.input_file
     input_path = path.normpath(input_file.name)
     input_dirname, input_filename = path.split(input_path)
 
     df: DataFrame = pd.read_csv(args.input_file)
     name = path.splitext(input_filename)[0]
+
+    description = df.describe()
+
+    for col_id in description:
+        for stat_id in description.index:
+            df['{}_{}'.format(col_id, stat_id)] = description[col_id][stat_id]
 
     # Decls
     output_decls_file = args.output_decls_file
@@ -114,5 +131,16 @@ def main():
 
     output_dtrace(df, name, output_dtrace_file)
 
+    output_decls_file.flush()
+    output_dtrace_file.flush()
+
+    run_daikon(path.abspath(output_decls_file.name), path.abspath(output_dtrace_file.name))
+
+
+def entry():
+    args = parser.parse_args()
+    main(args)
+
+
 if __name__ == '__main__':
-    main()
+    entry()
