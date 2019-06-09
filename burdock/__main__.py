@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from jinja2 import Environment, PackageLoader, Template
 from pandas import DataFrame, Series
+from pandas.core.dtypes.common import is_integer_dtype, is_float_dtype, is_string_dtype, is_bool_dtype
 
 from burdock.util import run_daikon
 
@@ -31,25 +32,26 @@ parser.add_argument('--out-dtrace',
 
 
 def dec_type(dtype):
-    if dtype == np.int64:
+    if is_integer_dtype(dtype):
         return 'int'
-    if dtype == np.float64:
+    if is_float_dtype(dtype):
         return 'double'
-    if dtype == bool:
+    if is_bool_dtype(dtype):
         return 'boolean'
-    if dtype == object:
+    if is_string_dtype(dtype):
         return 'java.lang.String'
+
     raise RuntimeError("Unsupported dtype: %s".format(repr(dtype)))
 
 
 def rep_type(dtype):
-    if dtype == np.int64:
+    if is_integer_dtype(dtype):
         return 'int'
-    if dtype == np.float64:
+    if is_float_dtype(dtype):
         return 'double'
-    if dtype == bool:
+    if is_bool_dtype(dtype):
         return 'boolean'
-    if dtype == object:
+    if is_string_dtype(dtype):
         return 'java.lang.String'
     raise RuntimeError("Unsupported dtype: %s".format(repr(dtype)))
 
