@@ -16,12 +16,12 @@ def numeric_matcher(series: Series) -> bool:
     return is_numeric_dtype(series)
 
 
-@matcher(tag='type.float')
+@matcher(tag='type.numeric.float')
 def float_matcher(series: Series) -> bool:
     return is_float_dtype(series)
 
 
-@matcher(tag='type.integer')
+@matcher(tag='type.numeric.integer')
 def integer_matcher(series: Series) -> bool:
     return is_integer_dtype(series)
 

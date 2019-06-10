@@ -8,6 +8,7 @@ from jinja2 import Environment, PackageLoader, Template
 from pandas import DataFrame, Series
 from pandas.core.dtypes.common import is_integer_dtype, is_float_dtype, is_string_dtype, is_bool_dtype
 
+from burdock import Burdock
 from burdock.util import run_daikon
 
 # todo: use `constant` flag in decls to avoid output in traces.
@@ -112,6 +113,14 @@ def main(args):
     name = path.splitext(input_filename)[0]
 
     description = df.describe()
+
+    b = Burdock(name, df)
+    b.match()
+    b.expand()
+
+    print(b.constants)
+
+    print(b.expanded_df)
 
     for col_id in description:
         for stat_id in description.index:
