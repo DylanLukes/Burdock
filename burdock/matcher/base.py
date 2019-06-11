@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
+from typing import AnyStr, Type, SupportsFloat, Callable
 
 from pandas import Series
-from pandas.api.types import is_bool_dtype
 from pandas.core.dtypes.common import infer_dtype_from_object
-
-from typing import AnyStr, List, Type, SupportsFloat, Collection, Callable
 
 __all__ = [
     'matcher',

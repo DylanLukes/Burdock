@@ -118,13 +118,14 @@ def main(args):
     b.match()
     b.expand()
 
-    print(b.constants)
+    print("\nVariables:\n{}\n".format(b.variables))
+    print("\nTraces:\n{}\n".format(b.traces))
+    print("\nLatent Variables:\n{}\n".format(b.latent_variables))
+    print("\nLatent Traces:\n{}\n".format(b.latent_traces))
 
-    print(b.expanded_df)
-
-    for col_id in description:
-        for stat_id in description.index:
-            df['{}_{}'.format(col_id, stat_id)] = description[col_id][stat_id]
+    # for col_id in description:
+    #     for stat_id in description.index:
+    #         df['{}_{}'.format(col_id, stat_id)] = description[col_id][stat_id]
 
     # Decls
     output_decls_file = args.output_decls_file

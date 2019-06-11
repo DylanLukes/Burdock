@@ -21,5 +21,5 @@ class Expander(ABC):
     def expand_columns(self, series: Series) -> DataFrame:
         return pd.DataFrame()
 
-    def expand_constants(self, series: Series) -> Series:
-        return pd.Series()
+    def expand_constants(self, series: Series) -> DataFrame:
+        return pd.DataFrame()
