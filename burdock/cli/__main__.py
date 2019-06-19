@@ -3,13 +3,9 @@ from io import TextIOWrapper
 from os import path
 
 import pandas as pd
-from jinja2 import Environment, PackageLoader, Template
-from pandas import DataFrame, Series
-from pandas.core.dtypes.common import is_integer_dtype, is_float_dtype, is_string_dtype, is_bool_dtype
+from pandas import DataFrame
 
-from burdock import Burdock
-from burdock.expander import statistics_expander
-from burdock.matcher.common import numeric_matcher
+from burdock.core import Burdock
 from burdock.util.subprocess import run_daikon
 
 # todo: use `constant` flag in decls to avoid output in traces.

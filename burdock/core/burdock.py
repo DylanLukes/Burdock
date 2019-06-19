@@ -39,7 +39,7 @@ class Burdock:
 
     _matched_tags: Dict[str, Set[str]] = defaultdict(set)
 
-    _template_env = j2.Environment(loader=j2.PackageLoader('burdock', 'templates'))
+    _template_env = j2.Environment(loader=j2.PackageLoader('burdock.core', 'templates'))
     _template_env.filters['daikon'] = _daikon_format_filter
 
     _decls_template = _template_env.get_template('decls.jinja2')
