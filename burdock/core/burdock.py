@@ -132,12 +132,6 @@ class Burdock:
         out.write(decls_text)
 
     def write_dtrace(self, out: TextIO):
-        def get_var(col_id):
-            if col_id in self.variables:
-                return self.variables[col_id]
-            if col_id in self.latent_variables:
-                return self.latent_variables[col_id]
-
         template_data = {
             'name': self.name,
             'traces': [
