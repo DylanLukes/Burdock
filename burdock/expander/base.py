@@ -10,15 +10,13 @@ __all__ = [
 
 
 class Expander(ABC):
-    tag: AnyStr
-
-    def __init__(self, tag):
+    def __init__(self, tag: str):
         self.tag = tag
 
     def get_tag(self):
         return self.tag
 
-    def expand_columns(self, series: Series) -> DataFrame:
+    def expand_variables(self, series: Series) -> DataFrame:
         return pd.DataFrame()
 
     def expand_constants(self, series: Series) -> DataFrame:

@@ -8,4 +8,7 @@ ppt-type point
         var-kind variable
         dec-type {{var.dec_type}}
         rep-type {{var.rep_type}}
+        {%- if var.is_constant %}
+        constant {{var|daikon}}
+        {%- endif -%}
 {%- endfor %}

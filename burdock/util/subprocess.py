@@ -1,6 +1,6 @@
+import subprocess
 from os import PathLike
 from shlex import quote
-import subprocess
 
 
 def run_daikon(decls: PathLike, dtrace: PathLike):
@@ -9,4 +9,3 @@ def run_daikon(decls: PathLike, dtrace: PathLike):
 
     for line in stdout.strip().decode().splitlines():
         print(line)
-

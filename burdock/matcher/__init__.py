@@ -1,8 +1,6 @@
-from .base import Matcher, DataTypeMatcher, ProbabilisticMatcher
+from .base import Matcher, ProbabilisticMatcher
 
 __all__ = [
     'Matcher',
-    'DataTypeMatcher',
     'ProbabilisticMatcher',
-
 ]

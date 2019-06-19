@@ -4,6 +4,9 @@ from burdock.expander import Expander
 
 
 class StatisticsExpander(Expander):
+    def expand_variables(self, series: Series) -> DataFrame:
+        return super().expand_variables(series)
+
     def expand_constants(self, series: Series) -> DataFrame:
         return series \
             .describe() \

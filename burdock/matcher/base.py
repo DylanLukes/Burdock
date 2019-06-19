@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import AnyStr, Type, SupportsFloat, Callable
+from typing import SupportsFloat, Callable
 
 from pandas import Series
-from pandas.core.dtypes.common import infer_dtype_from_object
 
 __all__ = [
     'matcher',
     'Matcher',
-    'DataTypeMatcher',
     'ProbabilisticMatcher'
 ]
 
@@ -15,9 +13,7 @@ __all__ = [
 class Matcher(ABC):
     """A simple class for defining a matcher."""
 
-    tag: AnyStr
-
-    def __init__(self, tag):
+    def __init__(self, tag: str):
         self.tag = tag
 
     def __call__(self, *args, **kwargs):
@@ -32,8 +28,6 @@ class Matcher(ABC):
 
 
 class FunctionMatcher(Matcher):
-    match_func: Callable[[Series], bool]
-
     def __init__(self, tag, match_func: Callable[[Series], bool]):
         super().__init__(tag)
         self.match_func = match_func
@@ -49,31 +43,11 @@ def matcher(tag):
     return matcher_decorator
 
 
-class DataTypeMatcher(Matcher):
-    dtype: Type
-
-    def __init__(self, tag, dtype):
-        super().__init__(tag)
-        self.dtype = dtype
-
-    @staticmethod
-    def normalize_dtype(dtype):
-        return infer_dtype_from_object(dtype)
-
-    def get_dtypes(self):
-        return self.dtype
-
-    def match(self, series: Series) -> bool:
-        this_dtype = self.normalize_dtype(self.dtype)
-        that_dtype = self.normalize_dtype(series.dtype)
-        return this_dtype == that_dtype
-
-
 class ProbabilisticMatcher(Matcher):
-    threshold: SupportsFloat
 
+    @abstractmethod
     def get_threshold(self) -> float:
-        return float(self.threshold)
+        pass
 
     @abstractmethod
     def match_prob(self, series: Series) -> SupportsFloat:
