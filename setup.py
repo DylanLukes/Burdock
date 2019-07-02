@@ -7,7 +7,7 @@ with open(path.join(project_dir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='burdock',
-    version='0.1.0',
+    version='0.1.1',
     packages=['burdock.cli',
               'burdock.core',
               'burdock.expander',

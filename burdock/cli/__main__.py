@@ -27,6 +27,14 @@ parser.add_argument('--out-dtrace',
                     dest='output_dtrace_file',
                     metavar='path',
                     type=argparse.FileType('w+', encoding='utf-8'))
+parser.add_argument('--verbose',
+                    dest='verbose',
+                    default=False,
+                    type=bool)
+parser.add_argument('--run-daikon',
+                    dest='run_daikon',
+                    default=False,
+                    type=bool)
 
 
 def main(args):
@@ -44,10 +52,11 @@ def main(args):
     b.match()
     b.expand()
 
-    print("\nVariables:\n{}\n".format(b.variables))
-    print("\nTraces:\n{}\n".format(b.traces))
-    print("\nLatent Variables:\n{}\n".format(b.latent_variables))
-    print("\nLatent Traces:\n{}\n".format(b.latent_traces))
+    if args.verbose:
+        print("\nVariables:\n{}\n".format(b.variables))
+        print("\nTraces:\n{}\n".format(b.traces))
+        print("\nLatent Variables:\n{}\n".format(b.latent_variables))
+        print("\nLatent Traces:\n{}\n".format(b.latent_traces))
 
     # Decls
     output_decls_file = args.output_decls_file
@@ -67,7 +76,8 @@ def main(args):
     b.write_dtrace(output_dtrace_file)
     output_dtrace_file.flush()
 
-    run_daikon(path.abspath(output_decls_file.name), path.abspath(output_dtrace_file.name))
+    if args.run_daikon:
+        run_daikon(path.abspath(output_decls_file.name), path.abspath(output_dtrace_file.name))
 
 
 def entry():
